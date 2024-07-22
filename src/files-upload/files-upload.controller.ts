@@ -1,6 +1,11 @@
 import {
   Controller,
+  FileTypeValidator,
+  HttpStatus,
+  MaxFileSizeValidator,
+  ParseFilePipe,
   Post,
+  UnprocessableEntityException,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
@@ -13,14 +18,35 @@ export class FilesUploadController {
   constructor() {}
 
   @Post('/single')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      limits: {
-        fileSize: 200, // 200 bytes
-      },
-    }),
-  )
-  uploadFile(@UploadedFile() file: File) {
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          // 1) validate file size
+          new MaxFileSizeValidator({
+            maxSize: 2 * 1024 * 1024, // 200Bytes
+            message: (maxSize) =>
+              `File is too big. Max file size is ${maxSize} bytes`,
+          }),
+
+          // 2) validate file type (extension)
+          new FileTypeValidator({
+            fileType: /png|jpg/,
+          }),
+
+          // 3) custom validation
+        ],
+        errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+        exceptionFactory: (error: string) => {
+          console.log('error', error);
+          throw new UnprocessableEntityException(error);
+        },
+        fileIsRequired: true,
+      }),
+    )
+    file: File,
+  ) {
     // this.awsS3.uploadSingleFiles(file);
     return file;
   }
