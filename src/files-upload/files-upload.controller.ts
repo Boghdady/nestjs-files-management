@@ -11,6 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileSignatureValidator } from '../shared/files/validators/file-signature.validator';
 
 type File = Express.Multer.File;
 @Controller('files-upload')
@@ -32,22 +33,17 @@ export class FilesUploadController {
 
           // 2) validate file type (extension)
           new FileTypeValidator({
-            fileType: /png|jpg/,
+            fileType: /jpg|pdf|png/,
           }),
 
-          // 3) custom validation
+          // 3) custom validation (validate file signature)
+          new FileSignatureValidator(),
         ],
-        errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-        exceptionFactory: (error: string) => {
-          console.log('error', error);
-          throw new UnprocessableEntityException(error);
-        },
-        fileIsRequired: true,
       }),
     )
     file: File,
   ) {
-    // this.awsS3.uploadSingleFiles(file);
+    // this.awsS3.uploadSingleFile(file);
     return file;
   }
 
@@ -69,7 +65,8 @@ export class FilesUploadController {
             fileType: /png|jpg|pdf/,
           }),
 
-          // 3) custom validation
+          // 3) custom validation (validate file signature)
+          new FileSignatureValidator(),
         ],
         errorHttpStatusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE,
         exceptionFactory: (error: string) => {
