@@ -9,10 +9,11 @@ import { FileSignatureValidator } from './validators/file-signature.validator';
 import { FileValidator } from '@nestjs/common/pipes/file/file-validator.interface';
 import { FileType } from './types/file.types';
 import { createFileTypeRegex } from './utils/file.util';
+import { NonEmptyArray } from '../utils/array.util';
 
 const createFileValidators = (
   maxSize: number,
-  fileTypes: FileType[],
+  fileTypes: NonEmptyArray<FileType>,
 ): FileValidator[] => {
   const fileTypeRegex = createFileTypeRegex(fileTypes);
   return [
@@ -35,7 +36,7 @@ const createFileValidators = (
 
 export const createParseFilePipe = (
   maxSize: number,
-  fileTypes: FileType[],
+  fileTypes: NonEmptyArray<FileType>,
 ): ParseFilePipe =>
   new ParseFilePipe({
     validators: createFileValidators(maxSize, fileTypes),
