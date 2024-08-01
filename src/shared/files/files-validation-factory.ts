@@ -17,19 +17,14 @@ const createFileValidators = (
 ): FileValidator[] => {
   const fileTypeRegex = createFileTypeRegex(fileTypes);
   return [
-    // 1) validate file size
     new MaxFileSizeValidator({
       maxSize, // 2MB
       message: (maxSize) =>
         `File is too big. Max file size is ${maxSize} bytes`,
     }),
-
-    // 2) validate file type (extension)
     new FileTypeValidator({
       fileType: fileTypeRegex,
     }),
-
-    // 3) custom validation (validate file signature)
     new FileSignatureValidator(),
   ];
 };
