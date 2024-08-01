@@ -14,6 +14,9 @@ dependencies:
   '@nestjs/platform-express':
     specifier: ^10.0.0
     version: 10.0.0(@nestjs/common@10.0.0)(@nestjs/core@10.0.0)
+  bytes:
+    specifier: ^3.1.2
+    version: 3.1.2
   magic-bytes.js:
     specifier: ^1.10.0
     version: 1.10.0
@@ -37,6 +40,9 @@ devDependencies:
   '@nestjs/testing':
     specifier: ^10.0.0
     version: 10.0.0(@nestjs/common@10.0.0)(@nestjs/core@10.0.0)(@nestjs/platform-express@10.0.0)
+  '@types/bytes':
+    specifier: ^3.1.4
+    version: 3.1.4
   '@types/express':
     specifier: ^4.17.17
     version: 4.17.17
@@ -1085,6 +1091,10 @@ packages:
     dependencies:
       '@types/connect': 3.4.38
       '@types/node': 20.3.1
+    dev: true
+
+  /@types/bytes@3.1.4:
+    resolution: {integrity: sha512-A0uYgOj3zNc4hNjHc5lYUfJQ/HVyBXiUMKdXd7ysclaE6k9oJdavQzODHuwjpUu2/boCP8afjQYi8z/GtvNCWA==}
     dev: true
 
   /@types/connect@3.4.38:

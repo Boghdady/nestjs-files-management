@@ -1,3 +1,4 @@
+import * as bytes from 'bytes';
 import {
   FileTypeValidator,
   HttpStatus,
@@ -7,18 +8,18 @@ import {
 } from '@nestjs/common';
 import { FileSignatureValidator } from './validators/file-signature.validator';
 import { FileValidator } from '@nestjs/common/pipes/file/file-validator.interface';
-import { FileType } from './types/file.types';
+import { FileSizeType, FileType } from './types/file.types';
 import { createFileTypeRegex } from './utils/file.util';
 import { NonEmptyArray } from '../utils/array.util';
 
 const createFileValidators = (
-  maxSize: number,
+  maxSize: FileSizeType,
   fileTypes: NonEmptyArray<FileType>,
 ): FileValidator[] => {
   const fileTypeRegex = createFileTypeRegex(fileTypes);
   return [
     new MaxFileSizeValidator({
-      maxSize, // 2MB
+      maxSize: bytes(maxSize),
       message: (maxSize) =>
         `File is too big. Max file size is ${maxSize} bytes`,
     }),
@@ -30,7 +31,7 @@ const createFileValidators = (
 };
 
 export const createParseFilePipe = (
-  maxSize: number,
+  maxSize: FileSizeType,
   fileTypes: NonEmptyArray<FileType>,
 ): ParseFilePipe =>
   new ParseFilePipe({
